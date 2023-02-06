@@ -14,6 +14,7 @@ import com.coresky.web.model.ListOfferModel;
 import com.coresky.web.model.RedisModel;
 import com.coresky.web.utils.OpenSeaClient;
 import com.coresky.web.utils.RedisTools;
+import com.coresky.web.utils.TimeTool;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -76,6 +77,15 @@ public class CheckRedisData {
                     // os 价格
                     try {
                         RedisModel redisModel = JSONObject.parseObject(data, RedisModel.class);
+//                        String value = redisTools.template.opsForValue().get("time:lock:" + redisModel.getContract() + ":" + redisModel.getTokenId());
+//                        if(null != value) {
+//                            if((TimeTool.timestamp() - Integer.valueOf(value)) < 60) {
+//                                logger.info("1 分钟内，不进行更新！");
+//                                return;
+//                            }
+//                        }
+//                        redisTools.template.opsForValue().set("time:lock:" + redisModel.getContract() + ":" + redisModel.getTokenId(),
+//                                String.valueOf(TimeTool.timestamp()));
                         //当前数据
                         //CkUserTokenEntity ckUserTokenEntity = ckUserTokenMapper.find(redisModel.getContract(), redisModel.getTokenId());
                         ListOfferModel.OrderInfo orderInfo = null;
@@ -208,11 +218,13 @@ public class CheckRedisData {
                 .url(url)
                 .get()
                 .addHeader("accept", "application/json")
-                .addHeader("X-API-KEY", environment.getProperty("opensea.key"))
+                //.addHeader("X-API-KEY", environment.getProperty("opensea.key"))
                 .build();
-        logger.info("get: " + url);
         Response response = client.newCall(request).execute();
-        ListOfferModel listOfferModel = JSON.parseObject(response.body().string(), ListOfferModel.class);
+        String value = response.body().string();
+        logger.info("get: " + url);
+        logger.info(value);
+        ListOfferModel listOfferModel = JSON.parseObject(value, ListOfferModel.class);
         if(null != listOfferModel.getOrders()) {
             if(listOfferModel.getOrders().size() > 0) {
                 return listOfferModel.getOrders().get(0).getCurrent_price();
@@ -229,11 +241,13 @@ public class CheckRedisData {
                 .url(url)
                 .get()
                 .addHeader("accept", "application/json")
-                .addHeader("X-API-KEY", environment.getProperty("opensea.key"))
+                //.addHeader("X-API-KEY", environment.getProperty("opensea.key"))
                 .build();
-        logger.info("get: " + url);
         Response response = client.newCall(request).execute();
-        ListOfferModel listOfferModel = JSON.parseObject(response.body().string(), ListOfferModel.class);
+        String value = response.body().string();
+        logger.info("get: " + url);
+        logger.info(value);
+        ListOfferModel listOfferModel = JSON.parseObject(value, ListOfferModel.class);
         if(null != listOfferModel.getOrders()) {
             if(listOfferModel.getOrders().size() > 0) {
                 return listOfferModel.getOrders().get(0);
