@@ -1,1 +1,1 @@
-/usr/bin/java-17 -jar /mnt/ftp/price-update/web-0.0.1-SNAPSHOT.jar --spring.config.location=/mnt/ftp/price-update/resources/application.yml
+/usr/bin/java-17 -jar /mnt/ftp/price-update/opensea.task-0.0.1-SNAPSHOT.jar --spring.config.location=/mnt/ftp/price-update/resources/application.yml

@@ -30,11 +30,11 @@ spring:
     host: 127.0.0.1
     port: 25341
 
-
 web3:
   url: https://goerli.infura.io/v3/e0ec62bcaf8c48f280127c0aa347ca24
 
 opensea:
-  api: https://testnets-api.opensea.io
-  chain: goerli
-  url: wss://testnets-stream.openseabeta.com/socket/websocket
+  key: 60e3ddec66674376a7522204e5fc6701
+  api: https://api.opensea.io
+  chain: ethereum
+  url: wss://api.openseabeta.com/socket/websocket
