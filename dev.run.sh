@@ -1,0 +1,1 @@
+/Library/Java/JavaVirtualMachines/jdk1.8.0_321.jdk/Contents/Home/bin/java -jar ./target/web-0.0.1-SNAPSHOT.jar --spring.config.location=./src/main/resources/application.yml

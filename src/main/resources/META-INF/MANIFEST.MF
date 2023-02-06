@@ -1,0 +1,75 @@
+Manifest-Version: 1.0
+Main-Class: com.coresky.web.Cmd
+Class-Path: fastjson2-extension-2.0.21.jar assertj-core-3.18.1.jar jboss
+ -logging-3.4.1.Final.jar commons-io-2.11.0.jar jackson-module-parameter
+ -names-2.11.3.jar core-5.0.0.jar crypto-5.0.0.jar junit-platform-engine
+ -1.7.0.jar jsqlparser-4.4.jar springfox-swagger-common-3.0.0.jar spring
+ -context-5.3.2.jar opentest4j-1.2.0.jar jackson-annotations-2.11.3.jar 
+ netty-buffer-4.1.55.Final.jar kotlin-stdlib-jdk8-1.4.21.jar spring-boot
+ -starter-data-redis-2.4.1.jar jnr-constants-0.9.11.jar logback-core-1.2
+ .3.jar android-json-0.0.20131108.vaadin1.jar core-1.58.0.0.jar spring-w
+ eb-5.3.2.jar httpcore-nio-4.4.14.jar springfox-spring-webflux-3.0.0.jar
+  accessors-smart-1.2.jar jakarta.xml.bind-api-2.3.3.jar jline-3.21.0.ja
+ r asm-analysis-5.0.3.jar jsonassert-1.5.0.jar jackson-datatype-jdk8-2.1
+ 1.3.jar jackson-dataformat-cbor-2.11.3.jar error_prone_annotations-2.11
+ .0.jar Java-WebSocket-1.3.9.jar byte-buddy-1.10.18.jar j2objc-annotatio
+ ns-1.3.jar swagger-models-1.5.20.jar spring-plugin-metadata-2.0.0.RELEA
+ SE.jar snakeyaml-1.27.jar aws-java-sdk-kms-1.12.338.jar bcprov-jdk15on-
+ 1.65.jar reactive-streams-1.0.3.jar commons-codec-1.15.jar okio-jvm-3.0
+ .0.jar spring-boot-autoconfigure-2.4.1.jar mybatis-spring-boot-autoconf
+ igure-2.2.2.jar jul-to-slf4j-1.7.30.jar lettuce-core-6.0.1.RELEASE.jar 
+ joda-time-2.8.1.jar springfox-core-3.0.0.jar spring-tx-5.3.2.jar spring
+ -jcl-5.3.2.jar junit-platform-commons-1.7.0.jar jnr-ffi-2.1.9.jar netty
+ -handler-4.1.55.Final.jar springfox-schema-3.0.0.jar surefire-logger-ap
+ i-2.22.2.jar jnr-unixsocket-0.21.jar junit-jupiter-params-5.7.0.jar xml
+ unit-core-2.7.0.jar asm-tree-5.0.3.jar kotlin-stdlib-common-1.4.21.jar 
+ classgraph-4.8.83.jar spring-boot-test-2.4.1.jar jackson-core-2.11.3.ja
+ r commons-lang3-3.12.0.jar mybatis-spring-boot-starter-2.2.2.jar netty-
+ transport-4.1.55.Final.jar jjwt-0.9.1.jar tomcat-embed-core-9.0.41.jar 
+ springfox-spring-web-3.0.0.jar httpcore-4.4.14.jar hutool-all-5.8.9.jar
+  ini4j-0.5.4.jar aliyun-java-sdk-ram-3.1.0.jar objenesis-3.1.jar mybati
+ s-plus-annotation-3.5.2.jar jffi-1.2.16-native.jar mysql-connector-j-8.
+ 0.31.jar asm-commons-5.0.3.jar mybatis-plus-3.5.2.jar kotlin-stdlib-jdk
+ 7-1.4.21.jar netty-codec-4.1.55.Final.jar rxjava-2.2.20.jar opentracing
+ -api-0.33.0.jar spring-test-5.3.2.jar spring-core-5.3.2.jar netty-commo
+ n-4.1.55.Final.jar asm-util-5.0.3.jar springfox-spring-webmvc-3.0.0.jar
+  protobuf-java-3.21.9.jar aliyun-java-sdk-kms-2.11.0.jar junit-jupiter-
+ api-5.7.0.jar lombok-1.18.24.jar okhttp-4.10.0.jar spring-data-redis-2.
+ 4.2.jar hamcrest-2.2.jar failureaccess-1.0.1.jar spring-data-keyvalue-2
+ .4.2.jar spring-boot-starter-2.4.1.jar opentracing-noop-0.33.0.jar jaka
+ rta.el-3.0.3.jar aliyun-java-sdk-core-4.5.10.jar jdom2-2.0.6.jar jffi-1
+ .2.17.jar mybatis-spring-2.0.7.jar aliyun-sdk-oss-3.15.2.jar byte-buddy
+ -agent-1.10.18.jar tuples-5.0.0.jar druid-spring-boot-starter-1.2.14.ja
+ r validation-api-2.0.1.Final.jar swagger-annotations-1.5.20.jar jmespat
+ h-java-1.12.338.jar springfox-spi-3.0.0.jar surefire-booter-2.22.2.jar 
+ fastjson-2.0.21.jar mockito-junit-jupiter-3.6.28.jar java-jwt-4.2.1.jar
+  jnr-a64asm-1.0.0.jar slf4j-api-1.7.30.jar classmate-1.5.1.jar javax.ac
+ tivation-api-1.2.0.jar stax-api-1.0.1.jar fastjson2-2.0.21.jar HikariCP
+ -3.4.5.jar listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.j
+ ar hibernate-validator-6.1.5.Final.jar log4j-api-2.13.3.jar mybatis-plu
+ s-extension-3.5.2.jar surefire-api-2.22.2.jar rlp-5.0.0.jar httpclient-
+ 4.5.13.jar abi-5.0.0.jar spring-context-support-5.3.2.jar jnr-x86asm-1.
+ 0.2.jar springfox-swagger2-3.0.0.jar mybatis-plus-core-3.5.2.jar spring
+ -plugin-core-2.0.0.RELEASE.jar jackson-datatype-jsr310-2.11.3.jar logba
+ ck-classic-1.2.3.jar spring-aop-5.3.2.jar jakarta.activation-api-1.2.2.
+ jar spring-boot-starter-tomcat-2.4.1.jar junit-jupiter-engine-5.7.0.jar
+  commons-logging-1.2.jar asm-5.0.3.jar ion-java-1.0.2.jar spring-jdbc-5
+ .3.2.jar apiguardian-api-1.1.0.jar spring-webmvc-5.3.2.jar spring-oxm-5
+ .3.2.jar jnr-posix-3.0.47.jar jnr-enxio-0.19.jar netty-resolver-4.1.55.
+ Final.jar jackson-databind-2.11.3.jar jettison-1.1.jar jaxb-api-2.3.1.j
+ ar mockito-core-3.6.28.jar jsr305-3.0.2.jar annotations-13.0.jar gson-2
+ .10.jar log4j-to-slf4j-2.13.3.jar spring-boot-starter-web-2.4.1.jar jco
+ mmander-1.82.jar jakarta.annotation-api-1.3.5.jar kotlin-stdlib-1.4.21.
+ jar spring-data-commons-2.4.2.jar swagger-annotations-2.1.2.jar httpasy
+ ncclient-4.1.5.jar jakarta.validation-api-2.0.2.jar druid-1.2.14.jar js
+ on-path-2.4.0.jar spring-boot-test-autoconfigure-2.4.1.jar spring-expre
+ ssion-5.3.2.jar mybatis-plus-boot-starter-3.5.2.jar reactor-core-3.4.1.
+ jar logging-interceptor-3.14.9.jar tomcat-embed-websocket-9.0.41.jar aw
+ s-java-sdk-core-1.12.338.jar spring-boot-starter-json-2.4.1.jar mapstru
+ ct-1.3.1.Final.jar spring-boot-starter-test-2.4.1.jar checker-qual-3.12
+ .0.jar guava-31.1-jre.jar org.jacoco.agent-0.8.5-runtime.jar config-1.4
+ .2.jar spring-boot-starter-jdbc-2.4.1.jar opentracing-util-0.33.0.jar j
+ unit-jupiter-5.7.0.jar utils-5.0.0.jar spring-beans-5.3.2.jar spring-bo
+ ot-2.4.1.jar spring-boot-starter-logging-2.4.1.jar mybatis-3.5.9.jar aw
+ s-java-sdk-s3-1.12.338.jar json-smart-2.3.jar
+

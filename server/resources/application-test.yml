@@ -1,0 +1,40 @@
+#测试环境
+spring:
+  profiles:
+    include: mybatis-test
+  datasource:
+    url: jdbc:mysql://database-nftttest.cteywwtcoh0m.ap-southeast-1.rds.amazonaws.com:3306/coresky?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: admin
+    password: 00ShC3g5hFUVQof2SY6Z
+    type: com.alibaba.druid.pool.DruidDataSource
+    #    数据源其他配置
+    initialSize: 10
+    minIdle: 10
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    #   配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters: stat,wall
+    #    ,log4j
+    maxPoolPreparedStatementPerConnectionSize: 20
+    useGlobalDataSourceStat: true
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+
+  redis:
+    host: 127.0.0.1
+    port: 25341
+
+
+web3:
+  url: https://goerli.infura.io/v3/e0ec62bcaf8c48f280127c0aa347ca24
+
+opensea:
+  api: https://testnets-api.opensea.io
+  chain: goerli
+  url: wss://testnets-stream.openseabeta.com/socket/websocket

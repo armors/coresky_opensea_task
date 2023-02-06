@@ -1,0 +1,30 @@
+spring:
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  task:
+    execution:
+      pool:
+        core-size: 200
+
+server:
+  port: 2802
+  tomcat:
+    accept-count: 10000
+    max-connections: 10000
+    threads:
+      max: 10000
+
+mybatis:
+  config-location: classpath:mybatis-config.xml
+
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  file:
+    name: /Users/ronnie/Documents/armors/market/opensea_stream/logs/info.log
