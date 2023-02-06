@@ -101,10 +101,14 @@ public class CheckRedisData {
                         try {
                             orderInfo = queryOpenseaListed(redisModel.getContract(), redisModel.getTokenId());
                             logger.info("os 返回最低挂单价格 ： " + orderInfo);
+                        } catch (Throwable e) {
+                            logger.info("os 返回最低挂单 Error: " + e.getMessage());
+                        }
+                        try {
                             osOfferPrice = queryOpenseaOffer(redisModel.getContract(), redisModel.getTokenId());
                             logger.info("os 返回最高报价价格 ： " + osOfferPrice);
                         } catch (Throwable e) {
-                            logger.info("查询opensea价格错误: " + e.getMessage());
+                            logger.info("os 返回最高报价 Error: " + e.getMessage());
                         }
                         Map<String, String> minPrice = diffPrice(ckOrderPrice, orderInfo);
                         String offerPrice = diffOfferPrice(ckAuctionPrice, osOfferPrice);
@@ -211,19 +215,9 @@ public class CheckRedisData {
     }
 
     public String queryOpenseaOffer(String contract, String tokenId) throws IOException {
-        OkHttpClient client = new OkHttpClient();
         String url = environment.getProperty("opensea.api") + "/v2/orders/"+ environment.getProperty("opensea.chain") +"/seaport/offers?"+
                 "asset_contract_address="+ contract +"&limit=1&token_ids="+tokenId+"&order_by=eth_price&order_direction=desc";
-        Request request = new Request.Builder()
-                .url(url)
-                .get()
-                .addHeader("accept", "application/json")
-                //.addHeader("X-API-KEY", environment.getProperty("opensea.key"))
-                .build();
-        Response response = client.newCall(request).execute();
-        String value = response.body().string();
-        logger.info("get: " + url);
-        logger.info(value);
+        String value = createHttpBuild(url);
         ListOfferModel listOfferModel = JSON.parseObject(value, ListOfferModel.class);
         if(null != listOfferModel.getOrders()) {
             if(listOfferModel.getOrders().size() > 0) {
@@ -234,19 +228,9 @@ public class CheckRedisData {
     }
 
     public ListOfferModel.OrderInfo queryOpenseaListed(String contract, String tokenId) throws IOException {
-        OkHttpClient client = new OkHttpClient();
         String url = environment.getProperty("opensea.api") + "/v2/orders/"+ environment.getProperty("opensea.chain") +"/seaport/listings?"+
                 "asset_contract_address="+ contract +"&limit=1&token_ids="+tokenId+"&order_by=eth_price&order_direction=asc";
-        Request request = new Request.Builder()
-                .url(url)
-                .get()
-                .addHeader("accept", "application/json")
-                //.addHeader("X-API-KEY", environment.getProperty("opensea.key"))
-                .build();
-        Response response = client.newCall(request).execute();
-        String value = response.body().string();
-        logger.info("get: " + url);
-        logger.info(value);
+        String value = createHttpBuild(url);
         ListOfferModel listOfferModel = JSON.parseObject(value, ListOfferModel.class);
         if(null != listOfferModel.getOrders()) {
             if(listOfferModel.getOrders().size() > 0) {
@@ -254,5 +238,18 @@ public class CheckRedisData {
             }
         }
         return null;
+    }
+
+    public String createHttpBuild(String url) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        Request.Builder builder = new Request.Builder().url(url).get().addHeader("accept", "application/json");
+        if(environment.getProperty("opensea.chain").equals("ethereum")) {
+            builder.addHeader("X-API-KEY", environment.getProperty("opensea.key"));
+        }
+        Response response = client.newCall(builder.build()).execute();
+        String value = response.body().string();
+        logger.info("os exec: " + url);
+        logger.info("os exec: " + value);
+        return value;
     }
 }
