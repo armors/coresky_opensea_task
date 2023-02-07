@@ -111,7 +111,9 @@ public class CheckRedisData {
                             logger.info("os 返回最高报价 Error: " + e.getMessage());
                         }
                         Map<String, String> minPrice = diffPrice(ckOrderPrice, orderInfo);
+                        System.out.println(minPrice);
                         String offerPrice = diffOfferPrice(ckAuctionPrice, osOfferPrice);
+                        System.out.println(offerPrice);
                         //更新数据库(未在售)
                         if(minPrice.get("basePrice").equals("0")) {
                             ckOrdersMapper.updateUserTokenState(
