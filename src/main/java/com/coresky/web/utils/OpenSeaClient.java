@@ -43,10 +43,10 @@ public class OpenSeaClient extends WebSocketClient {
             ckCollectionsInfoMapper.closeAll();
             //重新订阅
             ckCollectionsInfoMapper.selectList(ckCollectionsInfoMapper.createQueryWrapper()).forEach(ckCollectionsInfoEntity -> {
-                if(ckCollectionsInfoEntity.getOpenseaStatus() == 1 && !StringUtils.isEmpty(ckCollectionsInfoEntity.getOpenseaName())) {
-                        logger.info("订阅：" + ckCollectionsInfoEntity.getOpenseaName());
+                if(ckCollectionsInfoEntity.getStatus() == 1 && !StringUtils.isEmpty(ckCollectionsInfoEntity.getName())) {
+                        logger.info("订阅：" + ckCollectionsInfoEntity.getName());
                         Map<String, String> map = new HashMap<>();
-                        map.put("topic", ckCollectionsInfoEntity.getOpenseaName());
+                        map.put("topic", "collection:" + ckCollectionsInfoEntity.getName());
                         map.put("event", "phx_join");
                         map.put("payload", "{}");
                         map.put("ref", "0");
@@ -90,10 +90,18 @@ public class OpenSeaClient extends WebSocketClient {
         } else {
             Map payload = (Map) JSONObject.parse(map.get("payload").toString());
             EventModel eventModel = JSONObject.parseObject(payload.get("payload").toString(), EventModel.class);
-            //redisTools.template.opsForList().leftPush("user:token:queue", s);
+            String[] nftInfo = eventModel.getItem().getNft_id().split("/");
+            logger.info("updateTokenPrice:" + nftInfo[1] + ":" + nftInfo[2] + ":" + "OPENSEA_STREAM");
+            Map<String, Object> queue = new HashMap<>();
+            queue.put("source", "opensea");
+            queue.put("contract", nftInfo[1]);
+            queue.put("tokenId", nftInfo[2]);
+            queue.put("event", "OPENSEA_STREAM");
+            redisTools.template.opsForList().leftPush("user:token:queue", JSONObject.toJSONString(queue));
             logInfo = "Event：" + map.get("event").toString() + ":" + eventModel.getItem().getNft_id();
         }
         if(null != logInfo) {
+            topicName = topicName.replace("collection:", "");
             ckCollectionsInfoMapper.updateByTopic(topicName, TimeTool.datetime() +":"+ logInfo);
         }
     }

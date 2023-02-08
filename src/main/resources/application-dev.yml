@@ -30,6 +30,7 @@ opensea:
   key: 60e3ddec66674376a7522204e5fc6701
   api: https://testnets-api.opensea.io
   chain: goerli
+  url: wss://testnets-stream.openseabeta.com/socket/websocket
 #  api: https://api.opensea.io
 #  chain: ethereum
-  url: wss://api.openseabeta.com/socket/websocket
+#  url: wss://api.openseabeta.com/socket/websocket

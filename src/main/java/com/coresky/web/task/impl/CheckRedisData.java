@@ -64,7 +64,7 @@ public class CheckRedisData {
 
     public void startTask() {
         if(taskSize >= maxTaskSize) {
-            logger.info("线程数量已"+maxTaskSize+"达到！");
+            logger.info("Redis 线程数量已满！");
             return;
         }
         taskSize++;
@@ -73,21 +73,16 @@ public class CheckRedisData {
             while (true) {
                 String data = redisTools.template.opsForList().rightPop("user:token:queue", Duration.ofSeconds(30));
                 logger.info("检查数据：" + data);
+                Thread.sleep(2L);
                 if(!StringUtils.isEmpty(data)) {
                     // os 价格
                     try {
                         RedisModel redisModel = JSONObject.parseObject(data, RedisModel.class);
-//                        String value = redisTools.template.opsForValue().get("time:lock:" + redisModel.getContract() + ":" + redisModel.getTokenId());
-//                        if(null != value) {
-//                            if((TimeTool.timestamp() - Integer.valueOf(value)) < 60) {
-//                                logger.info("1 分钟内，不进行更新！");
-//                                return;
-//                            }
-//                        }
-//                        redisTools.template.opsForValue().set("time:lock:" + redisModel.getContract() + ":" + redisModel.getTokenId(),
-//                                String.valueOf(TimeTool.timestamp()));
-                        //当前数据
-                        //CkUserTokenEntity ckUserTokenEntity = ckUserTokenMapper.find(redisModel.getContract(), redisModel.getTokenId());
+                        CkUserTokenEntity ckUserTokenEntity = ckUserTokenMapper.find(redisModel.getContract(), redisModel.getTokenId());
+                        if(null == ckUserTokenEntity) {
+                            logger.info("数据无记录，不进行更新！");
+                            return;
+                        }
                         ListOfferModel.OrderInfo orderInfo = null;
                         String osOfferPrice = null;
                         Map<String, Object> ckOrderPrice = null;

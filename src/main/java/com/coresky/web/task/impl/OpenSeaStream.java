@@ -40,9 +40,9 @@ public class OpenSeaStream {
     private ConfigurableApplicationContext configurableApplicationContext;
 
     public void startTask() throws URISyntaxException {
-        logger.info("启动服务！");
         redisTools.template.opsForValue().set("stream:last:check:time", String.valueOf(TimeTool.timestamp()));
         String url = environment.getProperty("opensea.url") + "?token=60e3ddec66674376a7522204e5fc6701";
+        logger.info("启动服务！" + url);
         webSocketClient = new OpenSeaClient(url, configurableApplicationContext);
         webSocketClient.connect();
     }
