@@ -19,7 +19,7 @@ public class WebApplication {
 
 	public static void main(String[] args) throws URISyntaxException {
 		ConfigurableApplicationContext configurableApplicationContext = SpringApplication.run(WebApplication.class, args);
-		OpenSeaStream openSeaStream = configurableApplicationContext.getBean(OpenSeaStream.class);
-		openSeaStream.startTask();
+//		OpenSeaStream openSeaStream = configurableApplicationContext.getBean(OpenSeaStream.class);
+//		openSeaStream.startTask();
 	}
 }

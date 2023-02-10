@@ -11,7 +11,9 @@ import com.coresky.web.mapper.CkAuctionMapper;
 import com.coresky.web.mapper.CkOrdersMapper;
 import com.coresky.web.mapper.CkUserTokenMapper;
 import com.coresky.web.model.ListOfferModel;
+import com.coresky.web.model.PriceModel;
 import com.coresky.web.model.RedisModel;
+import com.coresky.web.utils.BigDecimalTool;
 import com.coresky.web.utils.OpenSeaClient;
 import com.coresky.web.utils.RedisTools;
 import com.coresky.web.utils.TimeTool;
@@ -52,12 +54,6 @@ public class CheckRedisData {
     @Resource
     private CkUserTokenMapper ckUserTokenMapper;
 
-    @Resource
-    private CkAuctionMapper ckAuctionMapper;
-
-    @Resource
-    private CkOrdersMapper ckOrdersMapper;
-
     private int taskSize;
 
     private int maxTaskSize = 10;
@@ -83,51 +79,51 @@ public class CheckRedisData {
                             logger.info("数据无记录，不进行更新！");
                             return;
                         }
-                        ListOfferModel.OrderInfo orderInfo = null;
-                        String osOfferPrice = null;
-                        Map<String, Object> ckOrderPrice = null;
-                        String ckAuctionPrice = null;
-                        //cs 价格
-                        ckOrderPrice = queryOrderMergeData(redisModel.getContract(), redisModel.getTokenId());
-                        logger.info("cs 返回最低挂单价格 ： " + ckOrderPrice);
-                        ckAuctionPrice = queryAuctionMergeData(redisModel.getContract(), redisModel.getTokenId());
-                        logger.info("cs 返回最低挂单价格 ： " + ckAuctionPrice);
                         //os 价格
                         try {
-                            orderInfo = queryOpenseaListed(redisModel.getContract(), redisModel.getTokenId());
-                            logger.info("os 返回最低挂单价格 ： " + orderInfo);
+                            PriceModel priceModelOs;
+                            try {
+                                ListOfferModel.OrderInfo orderInfo = queryOpenseaListed(redisModel.getContract(), redisModel.getTokenId());
+                                logger.info("os 返回最低挂单价格 ： " + orderInfo);
+                                priceModelOs = PriceModel.initModel(
+                                        orderInfo.getCurrent_price(),
+                                        orderInfo.getListing_time(),
+                                        orderInfo.getExpiration_time()
+                                );
+                            } catch (Throwable e) {
+                                priceModelOs = PriceModel.nullModel();
+                            }
+                            PriceModel priceModelCs = PriceModel.initModel(
+                                    ckUserTokenEntity.getListedPriceCs(),
+                                    ckUserTokenEntity.getListedPriceCs(),
+                                    ckUserTokenEntity.getExpirationTimeCs()
+                            );
+                            PriceModel priceModel = BigDecimalTool.minValue(priceModelCs, priceModelOs);
+                            System.out.println(priceModelCs);
+                            System.out.println(priceModelOs);
+                            System.out.println(priceModel);
+                            //无价格，直接更新 cs 价格，推送更新队列
+                            if(priceModel.getBasePrice().compareTo(BigDecimal.ZERO) > 0) {
+                                ckUserTokenMapper.updateTokenSale(ckUserTokenEntity.getId(), -1,
+                                        priceModel.getBasePrice().toString(),
+                                        priceModel.getListingTime().toString(),
+                                        priceModel.getExpirationTime().toString()
+                                );
+                            } else {
+                                ckUserTokenMapper.updateTokenSale(ckUserTokenEntity.getId(), 0,
+                                        "0", "0", "0"
+                                );
+                            }
                         } catch (Throwable e) {
                             logger.info("os 返回最低挂单 Error: " + e.getMessage());
                         }
                         try {
-                            osOfferPrice = queryOpenseaOffer(redisModel.getContract(), redisModel.getTokenId());
+                            BigDecimal osOfferPrice = queryOpenseaOffer(redisModel.getContract(), redisModel.getTokenId());
                             logger.info("os 返回最高报价价格 ： " + osOfferPrice);
+                            BigDecimal offerPrice = BigDecimalTool.maxValue(osOfferPrice, BigDecimalTool.BigDecimal(ckUserTokenEntity.getOfferPriceCs()));
+                            ckUserTokenMapper.updateOfferPrice(ckUserTokenEntity.getId(), offerPrice.toString(), osOfferPrice.toString());
                         } catch (Throwable e) {
                             logger.info("os 返回最高报价 Error: " + e.getMessage());
-                        }
-                        Map<String, String> minPrice = diffPrice(ckOrderPrice, orderInfo);
-                        System.out.println(minPrice);
-                        String offerPrice = diffOfferPrice(ckAuctionPrice, osOfferPrice);
-                        System.out.println(offerPrice);
-                        //更新数据库(未在售)
-                        if(minPrice.get("basePrice").equals("0")) {
-                            ckOrdersMapper.updateUserTokenState(
-                                    redisModel.getContract(), redisModel.getTokenId(),
-                                    0,
-                                    "0", offerPrice,
-                                    "0", ckAuctionPrice,
-                                    "0", osOfferPrice,
-                                    "0"
-                            );
-                        } else {
-                            ckOrdersMapper.updateUserTokenState(
-                                    redisModel.getContract(), redisModel.getTokenId(),
-                                    -1,
-                                    minPrice.get("basePrice"), offerPrice,
-                                    null != ckOrderPrice ? ckOrderPrice.get("base_price").toString() : "0", ckAuctionPrice,
-                                    null != orderInfo ? orderInfo.getCurrent_price() : "0", osOfferPrice,
-                                    minPrice.get("expirationTime")
-                            );
                         }
                     } catch (Throwable e) {
                         logger.info("解析失败：" + e.getMessage());
@@ -139,89 +135,17 @@ public class CheckRedisData {
         }
     }
 
-    public Map<String, String> diffPrice(Map<String, Object> ckOrderPrice, ListOfferModel.OrderInfo orderInfo) {
-        Map<String, String> result = new HashMap<>();
-        result.put("basePrice", "0");
-        result.put("expirationTime", "0");
-        if(null == orderInfo) {
-            if(null != ckOrderPrice) {
-                result.put("basePrice", ckOrderPrice.get("base_price").toString());
-                result.put("expirationTime", ckOrderPrice.get("expiration_time").toString());
-            }
-        } else if(null == ckOrderPrice) {
-            result.put("basePrice", orderInfo.getCurrent_price());
-            result.put("expirationTime", orderInfo.getExpiration_time());
-        } else {
-            //取价格 小的 作为 挂单价格
-            if(new BigDecimal(ckOrderPrice.get("base_price").toString()).compareTo(new BigDecimal(orderInfo.getCurrent_price())) < 0) {
-                result.put("basePrice", ckOrderPrice.get("base_price").toString());
-                result.put("expirationTime", ckOrderPrice.get("expiration_time").toString());
-            } else {
-                result.put("basePrice", orderInfo.getCurrent_price());
-                result.put("expirationTime", orderInfo.getExpiration_time());
-            }
-        }
-        return result;
-    }
-
-    public String diffOfferPrice(String csp, String osp) {
-        if(null == csp) {
-            if(null != osp) {
-                return osp;
-            }
-        } else if(osp == null) {
-            return csp;
-        } else {
-            //取价格 大的 作为 报价
-            if(new BigDecimal(csp).compareTo(new BigDecimal(osp)) > 0) {
-                return csp;
-            } else {
-                return osp;
-            }
-        }
-        return "0";
-    }
-
-    public Map<String, Object> queryOrderMergeData(String contract, String tokenId) {
-        QueryWrapper<CkOrdersEntity> queryWrapper = ckOrdersMapper.createQueryWrapper();
-        queryWrapper.eq("state", "0");
-        queryWrapper.eq("type", "1");
-        queryWrapper.eq("contract", contract);
-        queryWrapper.eq("token_id", tokenId);
-        queryWrapper.orderByAsc("base_price");
-        queryWrapper.select("base_price, expiration_time");
-        List<Map<String, Object>> result = ckOrdersMapper.selectMapsPage(new Page<>(1,1), queryWrapper).getRecords();
-        if (result.size() > 0) {
-            return result.get(0);
-        }
-        return null;
-    }
-
-    public String queryAuctionMergeData(String contract, String tokenId) {
-        QueryWrapper<CkAuctionEntity> queryWrapper = ckAuctionMapper.createQueryWrapper();
-        queryWrapper.eq("state", "0");
-        queryWrapper.eq("contract", contract);
-        queryWrapper.eq("token_id", tokenId);
-        queryWrapper.orderByDesc("base_price");
-        queryWrapper.select("base_price, expiration_time");
-        List<Map<String, Object>> result = ckAuctionMapper.selectMapsPage(new Page<>(1,1), queryWrapper).getRecords();
-        if (result.size() > 0) {
-            return result.get(0).get("base_price").toString();
-        }
-        return null;
-    }
-
-    public String queryOpenseaOffer(String contract, String tokenId) throws IOException {
+    public BigDecimal queryOpenseaOffer(String contract, String tokenId) throws IOException {
         String url = environment.getProperty("opensea.api") + "/v2/orders/"+ environment.getProperty("opensea.chain") +"/seaport/offers?"+
                 "asset_contract_address="+ contract +"&limit=1&token_ids="+tokenId+"&order_by=eth_price&order_direction=desc";
         String value = createHttpBuild(url);
         ListOfferModel listOfferModel = JSON.parseObject(value, ListOfferModel.class);
         if(null != listOfferModel.getOrders()) {
             if(listOfferModel.getOrders().size() > 0) {
-                return listOfferModel.getOrders().get(0).getCurrent_price();
+                return BigDecimalTool.BigDecimal(listOfferModel.getOrders().get(0).getCurrent_price());
             }
         }
-        return null;
+        return BigDecimal.ZERO;
     }
 
     public ListOfferModel.OrderInfo queryOpenseaListed(String contract, String tokenId) throws IOException {

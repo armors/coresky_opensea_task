@@ -17,6 +17,8 @@ public class ListOfferModel {
 
         private String current_price;
 
+        private String listing_time;
+
         private String expiration_time;
     }
 }

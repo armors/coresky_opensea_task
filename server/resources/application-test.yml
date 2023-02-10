@@ -27,8 +27,9 @@ spring:
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
 
   redis:
-    host: 127.0.0.1
-    port: 25341
+    host: 54.169.232.16
+    port: 16379
+    password: coresky
 
 web3:
   url: https://goerli.infura.io/v3/e0ec62bcaf8c48f280127c0aa347ca24
