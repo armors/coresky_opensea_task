@@ -99,24 +99,28 @@ public class CheckRedisData {
                                     ckUserTokenEntity.getExpirationTimeCs()
                             );
                             PriceModel priceModel = BigDecimalTool.minValue(priceModelCs, priceModelOs);
-                            System.out.println(priceModelCs);
-                            System.out.println(priceModelOs);
-                            System.out.println(priceModel);
+                            logger.info("os + " + JSON.toJSONString(priceModelOs));
+                            logger.info("cs + " + JSON.toJSONString(priceModelCs));
+                            logger.info("pm + " + JSON.toJSONString(priceModel));
                             //无价格，直接更新 cs 价格，推送更新队列
                             if(priceModel.getBasePrice().compareTo(BigDecimal.ZERO) > 0) {
                                 ckUserTokenMapper.updateTokenSale(ckUserTokenEntity.getId(), -1,
                                         priceModel.getBasePrice().toString(),
                                         priceModel.getListingTime().toString(),
-                                        priceModel.getExpirationTime().toString()
+                                        priceModel.getExpirationTime().toString(),
+                                        priceModelOs.getBasePrice().toString(),
+                                        priceModelOs.getListingTime().toString(),
+                                        priceModelOs.getExpirationTime().toString()
                                 );
                             } else {
                                 ckUserTokenMapper.updateTokenSale(ckUserTokenEntity.getId(), 0,
-                                        "0", "0", "0"
+                                        "0", "0", "0", "0","0","0"
                                 );
                             }
                         } catch (Throwable e) {
                             logger.info("os 返回最低挂单 Error: " + e.getMessage());
                         }
+                        Thread.sleep(1L);
                         try {
                             BigDecimal osOfferPrice = queryOpenseaOffer(redisModel.getContract(), redisModel.getTokenId());
                             logger.info("os 返回最高报价价格 ： " + osOfferPrice);

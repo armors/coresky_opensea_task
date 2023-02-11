@@ -38,16 +38,19 @@ public interface CkUserTokenMapper extends BaseMapper<CkUserTokenEntity> {
             "`base_price`=#{basePrice}, " +
             "`listing_time`=#{listingTime}, " +
             "`expiration_time`=#{expirationTime}, " +
-            "`listed_price_os`=#{basePrice}, " +
-            "`listing_time_os`=#{listingTime}, " +
-            "`expiration_time_os`=#{expirationTime}" +
+            "`listed_price_os`=#{basePriceOs}, " +
+            "`listing_time_os`=#{listingTimeOs}, " +
+            "`expiration_time_os`=#{expirationTimeOs}" +
             " WHERE `id`=#{id}")
     void updateTokenSale(
             @Param("id") int id,
             @Param("state") int state,
             @Param("basePrice") String basePrice,
             @Param("listingTime") String listingTime,
-            @Param("expirationTime") String expirationTime
+            @Param("expirationTime") String expirationTime,
+            @Param("basePriceOs") String basePriceOs,
+            @Param("listingTimeOs") String listingTimeOs,
+            @Param("expirationTimeOs") String expirationTimeOs
     );
 
     @Update("UPDATE `ck_user_token` SET " +
