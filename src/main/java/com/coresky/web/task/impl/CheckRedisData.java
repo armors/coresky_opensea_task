@@ -69,7 +69,6 @@ public class CheckRedisData {
             while (true) {
                 String data = redisTools.template.opsForList().rightPop("user:token:queue", Duration.ofSeconds(30));
                 logger.info("检查数据：" + data);
-                Thread.sleep(2L);
                 if(!StringUtils.isEmpty(data)) {
                     // os 价格
                     try {
@@ -120,7 +119,6 @@ public class CheckRedisData {
                         } catch (Throwable e) {
                             logger.info("os 返回最低挂单 Error: " + e.getMessage());
                         }
-                        Thread.sleep(1L);
                         try {
                             BigDecimal osOfferPrice = queryOpenseaOffer(redisModel.getContract(), redisModel.getTokenId());
                             logger.info("os 返回最高报价价格 ： " + osOfferPrice);

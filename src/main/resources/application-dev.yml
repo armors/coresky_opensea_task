@@ -21,11 +21,6 @@ spring:
 web3:
   url: https://goerli.infura.io/v3/e0ec62bcaf8c48f280127c0aa347ca24
 
-#.url("https://api.opensea.io/v2/orders/ethereum/seaport/offers?order_by=created_date&order_direction=desc")
-#
-#https://testnets-api.opensea.io   /v2/orders/  goerli   /seaport/offers?limit=1
-#https://api.opensea.io            /v2/orders/  {chain}   /seaport/offers
-
 opensea:
   key: 60e3ddec66674376a7522204e5fc6701
   api: https://testnets-api.opensea.io
