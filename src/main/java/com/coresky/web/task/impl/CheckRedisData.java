@@ -94,7 +94,7 @@ public class CheckRedisData {
                             }
                             PriceModel priceModelCs = PriceModel.initModel(
                                     ckUserTokenEntity.getListedPriceCs(),
-                                    ckUserTokenEntity.getListedPriceCs(),
+                                    ckUserTokenEntity.getListingTimeCs(),
                                     ckUserTokenEntity.getExpirationTimeCs()
                             );
                             PriceModel priceModel = BigDecimalTool.minValue(priceModelCs, priceModelOs);
