@@ -12,7 +12,6 @@ public class ListOfferModel {
     private List<OrderInfo> orders;
 
     @Data
-    @NoArgsConstructor
     public static class OrderInfo {
 
         private String current_price;
@@ -20,5 +19,25 @@ public class ListOfferModel {
         private String listing_time;
 
         private String expiration_time;
+
+        private ProtocolDataModel protocol_data;
+    }
+
+    @Data
+    public static class ProtocolDataModel {
+
+        private ParametersModel parameters;
+    }
+
+    @Data
+    public static class ParametersModel {
+
+        private List<ConsiderationModel> consideration;
+    }
+
+    @Data
+    public static class ConsiderationModel {
+
+        private String token;
     }
 }

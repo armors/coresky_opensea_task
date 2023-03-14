@@ -152,12 +152,24 @@ public class CheckRedisData {
 
     public ListOfferModel.OrderInfo queryOpenseaListed(String contract, String tokenId) throws IOException {
         String url = environment.getProperty("opensea.api") + "/v2/orders/"+ environment.getProperty("opensea.chain") +"/seaport/listings?"+
-                "asset_contract_address="+ contract +"&limit=1&token_ids="+tokenId+"&order_by=eth_price&order_direction=asc";
+                "asset_contract_address="+ contract +"&limit=10&token_ids="+tokenId+"&order_by=eth_price&order_direction=asc";
         String value = createHttpBuild(url);
         ListOfferModel listOfferModel = JSON.parseObject(value, ListOfferModel.class);
         if(null != listOfferModel.getOrders()) {
             if(listOfferModel.getOrders().size() > 0) {
-                return listOfferModel.getOrders().get(0);
+                for (ListOfferModel.OrderInfo order : listOfferModel.getOrders()) {
+                    if(order.getProtocol_data() != null
+                            && order.getProtocol_data().getParameters() != null
+                            && order.getProtocol_data().getParameters().getConsideration() != null
+                            && order.getProtocol_data().getParameters().getConsideration().size() > 0
+                    ) {
+                        for (ListOfferModel.ConsiderationModel considerationModel : order.getProtocol_data().getParameters().getConsideration()) {
+                            if(considerationModel.getToken().equals("0x0000000000000000000000000000000000000000")) {
+                                return order;
+                            }
+                        }
+                    }
+                }
             }
         }
         return null;

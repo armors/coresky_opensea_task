@@ -21,10 +21,9 @@ server:
 mybatis:
   config-location: classpath:mybatis-config.xml
 
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
 logging:
-  file:
-    name: /Users/ronnie/Documents/armors/market/opensea_stream/logs/info.log
+  level:
+    com:
+      coresky:
+        web:
+          mapper: debug
